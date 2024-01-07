@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">openXcam</string>
-    <string name="take_photo">X</string>
-    <string name="start_capture">clip</string>
+    <string name="take_photo"></string>
+    <string name="start_capture">record</string>
     <string name="stop_capture">stop</string>
 </resources>
