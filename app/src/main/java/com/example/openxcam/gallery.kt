@@ -1,31 +1,32 @@
 package com.example.openxcam
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class gallery(fragmentGallery: Int) : Fragment() {
 
-    companion object {
-        fun newInstance() = gallery(R.layout.fragment_gallery)
+
+/**
+ * A simple [Fragment] subclass.
+ * Use the [gallery.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class gallery : Fragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
     }
-
-    private lateinit var viewModel: GalleryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(GalleryViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }
