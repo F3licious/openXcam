@@ -14,26 +14,37 @@
 
     <Button
         android:id="@+id/image_capture_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginEnd="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="50dp"
+        android:layout_marginEnd="50dp"
+        android:elevation="2dp"
+        android:background="@drawable/outline_circle_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/vertical_centerline"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/vertical_centerline" />
 
     <Button
         android:id="@+id/video_capture_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="50dp"
         android:layout_marginStart="50dp"
+        android:textSize="10dp"
         android:elevation="2dp"
         android:text="@string/start_capture"
-        android:drawableLeft="@drawable/circle"
-        android:textColor="@color/black"
+        android:background="@drawable/round_videocam_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/vertical_centerline" />
+
+    <Button
+        android:id="@+id/btnOpenGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="openFragment"
+        android:textSize="10dp"
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/baseline_image_24"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_centerline"
