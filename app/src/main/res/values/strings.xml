@@ -5,8 +5,9 @@
     <string name="stop_capture">stop</string>
 
     <string-array name="filter_options">
-        <item>Grün</item>
+        <item>Orginal</item>
         <item>Schwarz/Weiß</item>
+        <item>Grün</item>
         <item>Rot</item>
         <item>Blau</item>
         <item>Braun</item>

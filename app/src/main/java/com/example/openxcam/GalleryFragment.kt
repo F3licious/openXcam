@@ -61,8 +61,8 @@ class GalleryFragment : Fragment() {
                     1 -> applyBlackWhiteFilter()
                     2 -> applyGreenFilter()
                     3 -> applyRedFilter()
-                    4 -> applyBrownFilter()
-                    5 -> applyBlueFilter()
+                    4 -> applyBlueFilter()
+                    5 -> applyBrownFilter()
                 }
             }
 
@@ -71,31 +71,64 @@ class GalleryFragment : Fragment() {
     }
 
     private fun applyOriginalFilter() {
-        // Implementieren Sie die Logik, um den Originalfilter anzuwenden
+        binding.imageView.colorFilter = null
     }
 
     private fun applyBlackWhiteFilter() {
-        val imageView = binding.imageView // Zugriff auf die ImageView
+        val imageView = binding.imageView
         val colorMatrix = ColorMatrix()
-        colorMatrix.setSaturation(0f) // Setzt die Sättigung auf 0 für Schwarz-Weiß
+        colorMatrix.setSaturation(0f)
         val filter = ColorMatrixColorFilter(colorMatrix)
         imageView.colorFilter = filter
     }
 
     private fun applyGreenFilter() {
-        // Implementieren Sie die Logik, um den Grünfilter anzuwenden
+        val imageView = binding.imageView
+        val colorMatrix = ColorMatrix(floatArrayOf(
+            0f, 0f, 0f, 0f, 0f, // Rot-Kanal
+            0f, 1f, 0f, 0f, 0f, // Grün-Kanal
+            0f, 0f, 0f, 0f, 0f, // Blau-Kanal
+            0f, 0f, 0f, 1f, 0f  // Alpha-Kanal
+        ))
+        val filter = ColorMatrixColorFilter(colorMatrix)
+        imageView.colorFilter = filter
     }
 
     private fun applyRedFilter() {
-        // Implementieren Sie die Logik, um den Schwarz/Weiß-Filter anzuwenden
+        val imageView = binding.imageView
+        val colorMatrix = ColorMatrix(floatArrayOf(
+            1f, 0f, 0f, 0f, 0f, // Rot-Kanal
+            0f, 0f, 0f, 0f, 0f, // Grün-Kanal
+            0f, 0f, 0f, 0f, 0f, // Blau-Kanal
+            0f, 0f, 0f, 1f, 0f  // Alpha-Kanal
+        ))
+        val filter = ColorMatrixColorFilter(colorMatrix)
+        imageView.colorFilter = filter
     }
 
     private fun applyBrownFilter() {
-        // Implementieren Sie die Logik, um den Schwarz/Weiß-Filter anzuwenden
+        val imageView = binding.imageView
+        val sepiaMatrix = ColorMatrix()
+        sepiaMatrix.set(floatArrayOf(
+            0.393f, 0.769f, 0.189f, 0f, 0f,
+            0.349f, 0.686f, 0.168f, 0f, 0f,
+            0.272f, 0.534f, 0.131f, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        val filter = ColorMatrixColorFilter(sepiaMatrix)
+        imageView.colorFilter = filter
     }
 
     private fun applyBlueFilter() {
-        // Implementieren Sie die Logik, um den Schwarz/Weiß-Filter anzuwenden
+        val imageView = binding.imageView
+        val colorMatrix = ColorMatrix(floatArrayOf(
+            0f, 0f, 0f, 0f, 0f, // Rot-Kanal
+            0f, 0f, 0f, 0f, 0f, // Grün-Kanal
+            0f, 0f, 1f, 0f, 0f, // Blau-Kanal
+            0f, 0f, 0f, 1f, 0f  // Alpha-Kanal
+        ))
+        val filter = ColorMatrixColorFilter(colorMatrix)
+        imageView.colorFilter = filter
     }
 
 
