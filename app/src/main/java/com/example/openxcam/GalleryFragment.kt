@@ -3,13 +3,19 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import com.example.openxcam.databinding.FragmentGalleryBinding
 
@@ -37,7 +43,61 @@ class GalleryFragment : Fragment() {
         binding.rotateButton.setOnClickListener {
             rotateImage()
         }
+
+        // Konfigurieren Sie den Spinner
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.filter_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerFilter.adapter = adapter
+        }
+
+        binding.spinnerFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    when (position) {
+                    0 -> applyOriginalFilter()
+                    1 -> applyBlackWhiteFilter()
+                    2 -> applyGreenFilter()
+                    3 -> applyRedFilter()
+                    4 -> applyBrownFilter()
+                    5 -> applyBlueFilter()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
     }
+
+    private fun applyOriginalFilter() {
+        // Implementieren Sie die Logik, um den Originalfilter anzuwenden
+    }
+
+    private fun applyBlackWhiteFilter() {
+        val imageView = binding.imageView // Zugriff auf die ImageView
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(0f) // Setzt die Sättigung auf 0 für Schwarz-Weiß
+        val filter = ColorMatrixColorFilter(colorMatrix)
+        imageView.colorFilter = filter
+    }
+
+    private fun applyGreenFilter() {
+        // Implementieren Sie die Logik, um den Grünfilter anzuwenden
+    }
+
+    private fun applyRedFilter() {
+        // Implementieren Sie die Logik, um den Schwarz/Weiß-Filter anzuwenden
+    }
+
+    private fun applyBrownFilter() {
+        // Implementieren Sie die Logik, um den Schwarz/Weiß-Filter anzuwenden
+    }
+
+    private fun applyBlueFilter() {
+        // Implementieren Sie die Logik, um den Schwarz/Weiß-Filter anzuwenden
+    }
+
 
     private fun openGallery() {
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
