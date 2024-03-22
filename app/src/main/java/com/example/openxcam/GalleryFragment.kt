@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.openxcam.databinding.FragmentGalleryBinding
 
@@ -32,6 +33,9 @@ class GalleryFragment : Fragment() {
 
         binding.btnOpenGallery.setOnClickListener {
             openGallery()
+        }
+        binding.rotateButton.setOnClickListener {
+            rotateImage()
         }
     }
 
@@ -77,6 +81,10 @@ class GalleryFragment : Fragment() {
                 BitmapFactory.decodeStream(stream, null, bmOptions)
             }
         }
+    }
+
+    private fun rotateImage() {
+        binding.imageView.rotation = (binding.imageView.rotation + 90) % 360
     }
 
     override fun onDestroyView() {

@@ -28,6 +28,7 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
@@ -45,6 +46,7 @@ class MediaCaptureFragment : Fragment() {
     private var _binding: FragmentMediaCaptureBinding? = null
     private val binding get() = _binding!!
     private var imageCapture: ImageCapture? = null
+
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var contentResolver: ContentResolver
@@ -106,6 +108,7 @@ class MediaCaptureFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Hier können Sie sicher auf binding zugreifen, da es in onCreateView initialisiert wurde
+        
         binding.imageCaptureButton.setOnClickListener { takePhoto() }
         binding.videoCaptureButton.setOnClickListener { captureVideo() }
 
