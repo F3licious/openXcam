@@ -1,12 +1,18 @@
 package com.example.openxcam
 import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +22,13 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.openxcam.databinding.FragmentGalleryBinding
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 class GalleryFragment : Fragment() {
 
@@ -42,6 +53,10 @@ class GalleryFragment : Fragment() {
         }
         binding.rotateButton.setOnClickListener {
             rotateImage()
+        }
+
+        binding.saveButton.setOnClickListener {
+            saveFilteredBitmap()
         }
 
         // Konfigurieren Sie den Spinner
@@ -69,6 +84,48 @@ class GalleryFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
+
+    private fun saveFilteredBitmap() {
+        val imageView = binding.imageView
+
+        // Erstellen Sie ein Bitmap basierend auf der Größe der ImageView
+        val bitmap = Bitmap.createBitmap(imageView.width, imageView.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        imageView.draw(canvas)
+
+        // Speichern Sie das Bitmap im externen Speicher
+        val filename = "filtered_image_${System.currentTimeMillis()}.jpg"
+        var fos: OutputStream? = null
+        var imageUri: Uri? = null
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            }
+
+            val contentResolver = requireContext().contentResolver
+            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            fos = imageUri?.let { contentResolver.openOutputStream(it) }
+        } else {
+            val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
+            val image = File(imagesDir, filename)
+            imageUri = Uri.fromFile(image)
+            fos = FileOutputStream(image)
+        }
+
+        fos?.use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            Toast.makeText(requireContext(), "Bild gespeichert", Toast.LENGTH_SHORT).show()
+        }
+
+        // Informieren Sie das System über das neue Bild
+        imageUri?.let {
+            requireContext().sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, it))
+        }
+    }
+
 
     private fun applyOriginalFilter() {
         binding.imageView.colorFilter = null
@@ -175,6 +232,8 @@ class GalleryFragment : Fragment() {
             }
         }
     }
+
+
 
     private fun rotateImage() {
         binding.imageView.rotation = (binding.imageView.rotation + 90) % 360
