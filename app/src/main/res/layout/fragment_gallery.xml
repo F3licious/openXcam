@@ -29,6 +29,13 @@
             />
 
         <Button
+            android:id="@+id/metafileButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_metafile" />
+
+        <Button
             android:id="@+id/rotateButton"
             android:layout_width="48dp"
             android:layout_height="48dp"

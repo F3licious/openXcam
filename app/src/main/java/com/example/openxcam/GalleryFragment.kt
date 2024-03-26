@@ -1,5 +1,6 @@
 package com.example.openxcam
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -57,6 +58,10 @@ class GalleryFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             saveFilteredBitmap()
+        }
+
+        binding.metafileButton.setOnClickListener {
+            showImageMetadataDialog()
         }
 
         // Konfigurieren Sie den Spinner
@@ -129,6 +134,25 @@ class GalleryFragment : Fragment() {
 
     private fun applyOriginalFilter() {
         binding.imageView.colorFilter = null
+    }
+
+    private fun showImageMetadataDialog() {
+        // Erstellen Sie einen AlertDialog, um die Metadaten anzuzeigen
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Bildmetadaten")
+
+        // Hier fügen Sie die Logik hinzu, um die Metadaten des Bildes zu holen
+        // Zum Beispiel: "Auflösung: 1920x1080\nGröße: 2MB"
+        // Dies ist ein Platzhalter, ersetzen Sie ihn durch die tatsächlichen Metadaten
+        val metadataText = "Auflösung: 1920x1080\nGröße: 2MB"
+        builder.setMessage(metadataText)
+
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun applyBlackWhiteFilter() {
