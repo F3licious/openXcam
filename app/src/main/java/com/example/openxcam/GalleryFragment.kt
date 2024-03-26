@@ -10,6 +10,7 @@ import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.BitmapDrawable
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -35,6 +36,7 @@ class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
+    private var selectedImageUri: Uri? = null
 
     private val PICK_IMAGE_REQUEST = 1
 
@@ -61,7 +63,12 @@ class GalleryFragment : Fragment() {
         }
 
         binding.metafileButton.setOnClickListener {
-            showImageMetadataDialog()
+            selectedImageUri?.let { uri ->
+                val metadata = extractImageMetadata(uri)
+                showMetadataDialog(metadata)
+            } ?: run {
+                Toast.makeText(requireContext(), "Kein Bild ausgewählt", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Konfigurieren Sie den Spinner
@@ -131,28 +138,48 @@ class GalleryFragment : Fragment() {
         }
     }
 
+    private fun extractImageMetadata(imageUri: Uri): String {
+        val inputStream = requireContext().contentResolver.openInputStream(imageUri)
+        val exifInterface = inputStream?.let { ExifInterface(it) }
+
+        val stringBuilder = StringBuilder()
+
+        // Beispiel für das Auslesen einiger Metadaten
+        val dateTime = exifInterface?.getAttribute(ExifInterface.TAG_DATETIME)
+        val make = exifInterface?.getAttribute(ExifInterface.TAG_MAKE)
+        val model = exifInterface?.getAttribute(ExifInterface.TAG_MODEL)
+        val orientation = exifInterface?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+        val width = exifInterface?.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
+        val length = exifInterface?.getAttribute(ExifInterface.TAG_IMAGE_LENGTH)
+
+        // Größe des Bildes ermitteln
+        val fileSize = inputStream?.available() // Größe in Bytes
+        val fileSizeInKB = fileSize?.div(1024) // Umrechnung in Kilobytes
+
+        stringBuilder.append("Datum und Uhrzeit: $dateTime\n")
+        stringBuilder.append("Kamerahersteller: $make\n")
+        stringBuilder.append("Kameramodell: $model\n")
+        stringBuilder.append("Orientierung: $orientation\n")
+        stringBuilder.append("Breite: $width Pixel\n")
+        stringBuilder.append("Länge: $length Pixel\n")
+        stringBuilder.append("Dateigröße: $fileSizeInKB KB\n")
+
+        inputStream?.close()
+
+        return stringBuilder.toString()
+    }
+
 
     private fun applyOriginalFilter() {
         binding.imageView.colorFilter = null
     }
 
-    private fun showImageMetadataDialog() {
-        // Erstellen Sie einen AlertDialog, um die Metadaten anzuzeigen
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Bildmetadaten")
-
-        // Hier fügen Sie die Logik hinzu, um die Metadaten des Bildes zu holen
-        // Zum Beispiel: "Auflösung: 1920x1080\nGröße: 2MB"
-        // Dies ist ein Platzhalter, ersetzen Sie ihn durch die tatsächlichen Metadaten
-        val metadataText = "Auflösung: 1920x1080\nGröße: 2MB"
-        builder.setMessage(metadataText)
-
-        builder.setPositiveButton("OK") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val dialog = builder.create()
-        dialog.show()
+    private fun showMetadataDialog(metadata: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Bildmetadaten")
+            .setMessage(metadata)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     private fun applyBlackWhiteFilter() {
@@ -222,9 +249,8 @@ class GalleryFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            val selectedImageUri = data.data
+            selectedImageUri = data.data // Speichern der URI hier
 
-            // Verzögern Sie die Skalierung des Bildes, bis die ImageView gemessen wurde
             binding.imageView.post {
                 val bitmap = decodeBitmap(selectedImageUri)
                 binding.imageView.setImageBitmap(bitmap)
