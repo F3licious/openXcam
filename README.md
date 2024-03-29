@@ -10,4 +10,19 @@
 + deshalb: master/main: Kamera Funktionalität, gallery: Fotos anzeigen, bearbeiten, Metadaten anzeigen
 
 + im darkmode sieht die app aufgrund der Farben etwas besser aus
+
+---
+
+## Funktionen
+
+### Kamera
+*master branch*
+<br>
+*Fotos knipsen*
+
+<br>
+*Video starten*
+<br>
+*Video stoppen*
+
   
