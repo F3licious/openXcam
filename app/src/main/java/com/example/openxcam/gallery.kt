@@ -8,11 +8,7 @@ import android.view.ViewGroup
 
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [gallery.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class gallery : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
