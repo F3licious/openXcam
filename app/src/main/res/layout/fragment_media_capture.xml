@@ -2,19 +2,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- FrameLayout, das die gesamte Bildschirmfläche einnimmt -->
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!-- PreviewView für die Kamera-Vorschau -->
+
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!-- Button für die Fotoaufnahme -->
+
     <Button
         android:id="@+id/image_capture_button"
         android:layout_width="100dp"
@@ -25,7 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/vertical_centerline" />
 
-    <!-- Button für die Videoaufnahme -->
+
     <Button
         android:id="@+id/video_capture_button"
         android:layout_width="100dp"
@@ -38,7 +38,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/vertical_centerline" />
 
-    <!-- Unsichtbare View als zentrierter Ankerpunkt -->
+
     <View
         android:id="@+id/vertical_centerline"
         android:layout_width="1dp"

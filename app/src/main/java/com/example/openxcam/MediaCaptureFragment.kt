@@ -3,7 +3,6 @@ package com.example.openxcam
 import android.Manifest
 import android.content.ContentResolver
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -20,15 +19,11 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.FallbackStrategy
 import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.Quality
-import androidx.camera.video.QualitySelector
 import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
-import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
@@ -58,7 +53,6 @@ class MediaCaptureFragment : Fragment() {
 
         val name = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date()) + ".jpg"
 
-        // Create output options object which contains file + metadata
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -78,7 +72,6 @@ class MediaCaptureFragment : Fragment() {
             ActivityResultContracts.RequestMultiplePermissions()
         )
         { permissions ->
-            // Handle Permission granted/rejected
             var permissionGranted = true
             permissions.entries.forEach {
                 if (it.key in MainActivity.REQUIRED_PERMISSIONS && !it.value)
@@ -107,8 +100,6 @@ class MediaCaptureFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Hier können Sie sicher auf binding zugreifen, da es in onCreateView initialisiert wurde
-        
         binding.imageCaptureButton.setOnClickListener { takePhoto() }
         binding.videoCaptureButton.setOnClickListener { captureVideo() }
 
@@ -118,10 +109,8 @@ class MediaCaptureFragment : Fragment() {
     }
 
     private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-        // Create time stamped name and MediaStore entry.
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.GERMANY)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -132,8 +121,6 @@ class MediaCaptureFragment : Fragment() {
             }
         }
 
-        // Create output options object which contains file + metadata
-
         val outputOptions = ImageCapture.OutputFileOptions
             .Builder(
                 contentResolver,
@@ -142,8 +129,6 @@ class MediaCaptureFragment : Fragment() {
             )
             .build()
 
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
@@ -151,14 +136,14 @@ class MediaCaptureFragment : Fragment() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(
                         TAG,
-                        "Ups,das Foto konnte nicht aufgenommen werden :(: ${exc.message}",
+                        "Ups,das Foto konnte nicht aufgenommen werden :( ${exc.message}",
                         exc
                     )
                 }
 
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    val msg = "knips: ${output.savedUri}"
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                 }
@@ -173,13 +158,11 @@ class MediaCaptureFragment : Fragment() {
 
         val curRecording = recording
         if (curRecording != null) {
-            // Stop the current recording session.
             curRecording.stop()
             recording = null
             return
         }
 
-        // create and start a new recording session
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -216,7 +199,7 @@ class MediaCaptureFragment : Fragment() {
 
                     is VideoRecordEvent.Finalize -> {
                         if (!recordEvent.hasError()) {
-                            val msg = "Video capture succeeded: " +
+                            val msg = "Video wurde aufgenommen: " +
                                     "${recordEvent.outputResults.outputUri}"
                             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
                                 .show()
@@ -225,7 +208,7 @@ class MediaCaptureFragment : Fragment() {
                             recording?.close()
                             recording = null
                             Log.e(
-                                TAG, "Video capture ends with error: " +
+                                TAG, "Video Aufnahme fehlgeschlagen " +
                                         "${recordEvent.error}"
                             )
                         }
@@ -276,7 +259,7 @@ class MediaCaptureFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Setzen Sie _binding zurück auf null, um Speicherlecks zu vermeiden
+        _binding = null
     }
 
     companion object {

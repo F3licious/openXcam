@@ -1,21 +1,15 @@
 package com.example.openxcam
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.example.openxcam.GalleryFragment
-import com.example.openxcam.MediaCaptureFragment
-import com.example.openxcam.R
 import com.example.openxcam.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    // Definiere die erforderlichen Berechtigungen
     companion object {
         val REQUIRED_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
@@ -30,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        // Öffne das GalleryFragment, wenn der Galerie-Button geklickt wird
         binding.btnOpenGallery.setOnClickListener {
             if (allPermissionsGranted()) {
                 replaceFragment(GalleryFragment())
@@ -39,7 +32,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Öffne das MediaCaptureFragment, wenn der Aufnahme-Button geklickt wird
         binding.btnOpenCamera.setOnClickListener {
             if (allPermissionsGranted()) {
                 replaceFragment(MediaCaptureFragment())
@@ -57,20 +49,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSION_REQUEST_CODE)
-    }
-
-    private fun openGalleryFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, GalleryFragment())
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun openMediaCaptureFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, MediaCaptureFragment())
-            .addToBackStack(null)
-            .commit()
     }
 
     private fun replaceFragment(fragment: Fragment) {

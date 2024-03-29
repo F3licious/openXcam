@@ -2,14 +2,12 @@ package com.example.openxcam
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
-import android.graphics.drawable.BitmapDrawable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
@@ -21,15 +19,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.openxcam.databinding.FragmentGalleryBinding
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.OutputStream
 
 class GalleryFragment : Fragment() {
@@ -71,7 +65,7 @@ class GalleryFragment : Fragment() {
             }
         }
 
-        // Konfigurieren Sie den Spinner
+
         ArrayAdapter.createFromResource(
             requireContext(),
             R.array.filter_options,
@@ -100,12 +94,10 @@ class GalleryFragment : Fragment() {
     private fun saveFilteredBitmap() {
         val imageView = binding.imageView
 
-        // Erstellen Sie ein Bitmap basierend auf der Größe der ImageView
         val bitmap = Bitmap.createBitmap(imageView.width, imageView.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         imageView.draw(canvas)
 
-        // Speichern Sie das Bitmap im externen Speicher
         val filename = "filtered_image_${System.currentTimeMillis()}.jpg"
         var fos: OutputStream? = null
         var imageUri: Uri? = null
@@ -132,7 +124,6 @@ class GalleryFragment : Fragment() {
             Toast.makeText(requireContext(), "Bild gespeichert", Toast.LENGTH_SHORT).show()
         }
 
-        // Informieren Sie das System über das neue Bild
         imageUri?.let {
             requireContext().sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, it))
         }
@@ -144,22 +135,18 @@ class GalleryFragment : Fragment() {
 
         val stringBuilder = StringBuilder()
 
-        // Beispiel für das Auslesen einiger Metadaten
         val dateTime = exifInterface?.getAttribute(ExifInterface.TAG_DATETIME)
         val make = exifInterface?.getAttribute(ExifInterface.TAG_MAKE)
         val model = exifInterface?.getAttribute(ExifInterface.TAG_MODEL)
-        val orientation = exifInterface?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
         val width = exifInterface?.getAttribute(ExifInterface.TAG_IMAGE_WIDTH)
         val length = exifInterface?.getAttribute(ExifInterface.TAG_IMAGE_LENGTH)
 
-        // Größe des Bildes ermitteln
-        val fileSize = inputStream?.available() // Größe in Bytes
-        val fileSizeInKB = fileSize?.div(1024) // Umrechnung in Kilobytes
+        val fileSize = inputStream?.available()
+        val fileSizeInKB = fileSize?.div(1024)
 
         stringBuilder.append("Datum und Uhrzeit: $dateTime\n")
         stringBuilder.append("Kamerahersteller: $make\n")
         stringBuilder.append("Kameramodell: $model\n")
-        stringBuilder.append("Orientierung: $orientation\n")
         stringBuilder.append("Breite: $width Pixel\n")
         stringBuilder.append("Länge: $length Pixel\n")
         stringBuilder.append("Dateigröße: $fileSizeInKB KB\n")
@@ -170,9 +157,6 @@ class GalleryFragment : Fragment() {
     }
 
 
-    private fun applyOriginalFilter() {
-        binding.imageView.colorFilter = null
-    }
 
     private fun showMetadataDialog(metadata: String) {
         AlertDialog.Builder(requireContext())
@@ -180,6 +164,11 @@ class GalleryFragment : Fragment() {
             .setMessage(metadata)
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
+    }
+
+    //Filter
+    private fun applyOriginalFilter() {
+        binding.imageView.colorFilter = null
     }
 
     private fun applyBlackWhiteFilter() {
@@ -216,14 +205,14 @@ class GalleryFragment : Fragment() {
 
     private fun applyBrownFilter() {
         val imageView = binding.imageView
-        val sepiaMatrix = ColorMatrix()
-        sepiaMatrix.set(floatArrayOf(
+        val colorMatrix = ColorMatrix()
+        colorMatrix.set(floatArrayOf(
             0.393f, 0.769f, 0.189f, 0f, 0f,
             0.349f, 0.686f, 0.168f, 0f, 0f,
             0.272f, 0.534f, 0.131f, 0f, 0f,
             0f, 0f, 0f, 1f, 0f
         ))
-        val filter = ColorMatrixColorFilter(sepiaMatrix)
+        val filter = ColorMatrixColorFilter(colorMatrix)
         imageView.colorFilter = filter
     }
 
@@ -249,7 +238,7 @@ class GalleryFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            selectedImageUri = data.data // Speichern der URI hier
+            selectedImageUri = data.data
 
             binding.imageView.post {
                 val bitmap = decodeBitmap(selectedImageUri)
@@ -259,21 +248,9 @@ class GalleryFragment : Fragment() {
     }
 
     private fun decodeBitmap(imageUri: Uri?): Bitmap? {
-        // Verwenden Sie die Abmessungen der ImageView oder Standardwerte, falls diese noch nicht gemessen wurde
-        val targetW: Int = if (binding.imageView.width == 0) 800 else binding.imageView.width
-        val targetH: Int = if (binding.imageView.height == 0) 600 else binding.imageView.height
 
         val bmOptions = BitmapFactory.Options().apply {
-            // Get the dimensions of the bitmap
-            inJustDecodeBounds = true
-            BitmapFactory.decodeStream(imageUri?.let { context?.contentResolver?.openInputStream(it) }, null, this)
-
-            // Determine how much to scale down the image
-            val scaleFactor: Int = Math.max(1, Math.min(outWidth / targetW, outHeight / targetH))
-
-            // Decode the image file into a Bitmap sized to fill the View
             inJustDecodeBounds = false
-            inSampleSize = scaleFactor
         }
 
         return imageUri?.let { uri ->
