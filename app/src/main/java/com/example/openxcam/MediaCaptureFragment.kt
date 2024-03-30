@@ -247,16 +247,6 @@ class MediaCaptureFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun requestPermissions() {
-        activityResultLauncher.launch(REQUIRED_PERMISSIONS)
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            requireContext(), it
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
