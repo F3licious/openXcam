@@ -17,34 +17,34 @@
 
 ### Kamera (master branch):
 <br>
-**Fotos knipsen**
+**Fotos knipsen**<br>
 ![Fotoknipsen](https://github.com/F3licious/openXcam/blob/master/pictures/fotoknipsen.png)
 <br>
 <br>
-**Video starten**
+**Video starten**<br>
 <br>
 <br>
-**Video stoppen**
+**Video stoppen**<br>
 <br>
 
 ### Galerie (gallery branch):
 
-**Gallerie öffnen**
+**Gallerie öffnen**<br>
 <br>
 <br>
-**Bild auswählen**
+**Bild auswählen**<br>
 <br>
 <br>
-**Filter anwenden**
+**Filter anwenden**<br>
 <br>
 <br>
 **Bild drehen**
 <br>
 <br>
-**Metadaten anzeigen**
+**Metadaten anzeigen**<br>
 <br>
 <br>
-**Bild speichern**
+**Bild speichern**<br>
 <br>
 
 ---
