@@ -67,27 +67,6 @@ class MediaCaptureFragment : Fragment() {
     }
 
 
-    private val activityResultLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        )
-        { permissions ->
-            var permissionGranted = true
-            permissions.entries.forEach {
-                if (it.key in MainActivity.REQUIRED_PERMISSIONS && !it.value)
-                    permissionGranted = false
-            }
-            if (!permissionGranted) {
-                Toast.makeText(
-                    requireContext(),
-                    "Berechtigung abgelehnt",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                startCamera()
-            }
-        }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -221,33 +200,238 @@ class MediaCaptureFragment : Fragment() {
             }
     }
 
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+    class MediaCaptureFragment : Fragment() {
 
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+        private var videoCapture: VideoCapture<Recorder>? = null
+        private var recording: Recording? = null
+        private var _binding: FragmentMediaCaptureBinding? = null
+        private val binding get() = _binding!!
+        private var imageCapture: ImageCapture? = null
+
+
+        private lateinit var cameraExecutor: ExecutorService
+        private lateinit var contentResolver: ContentResolver
+        private lateinit var outputOptions: ImageCapture.OutputFileOptions
+
+        override fun onAttach(context: Context) {
+            super.onAttach(context)
+            contentResolver = context.contentResolver
+
+            val name = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date()) + ".jpg"
+
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/openXcam-Image")
                 }
-
-            imageCapture = ImageCapture.Builder().build()
-
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
-                )
-            } catch (exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
             }
-        }, ContextCompat.getMainExecutor(requireContext()))
-    }
 
-    override fun onDestroyView() {
+            outputOptions = ImageCapture.OutputFileOptions
+                .Builder(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                .build()
+        }
+
+
+        private val activityResultLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            )
+            { permissions ->
+                var permissionGranted = true
+                permissions.entries.forEach {
+                    if (it.key in MainActivity.REQUIRED_PERMISSIONS && !it.value)
+                        permissionGranted = false
+                }
+                if (!permissionGranted) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Berechtigung abgelehnt",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    startCamera()
+                }
+            }
+
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            _binding = FragmentMediaCaptureBinding.inflate(inflater, container, false)
+            return binding.root
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+
+            binding.imageCaptureButton.setOnClickListener { takePhoto() }
+            binding.videoCaptureButton.setOnClickListener { captureVideo() }
+
+            cameraExecutor = Executors.newSingleThreadExecutor()
+
+
+        }
+
+        private fun takePhoto() {
+            val imageCapture = imageCapture ?: return
+
+            val name = SimpleDateFormat(FILENAME_FORMAT, Locale.GERMANY)
+                .format(System.currentTimeMillis())
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/openXcam-Image")
+                }
+            }
+
+            val outputOptions = ImageCapture.OutputFileOptions
+                .Builder(
+                    contentResolver,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    contentValues
+                )
+                .build()
+
+            imageCapture.takePicture(
+                outputOptions,
+                ContextCompat.getMainExecutor(requireContext()),
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onError(exc: ImageCaptureException) {
+                        Log.e(
+                            TAG,
+                            "Ups,das Foto konnte nicht aufgenommen werden :( ${exc.message}",
+                            exc
+                        )
+                    }
+
+                    override fun
+                            onImageSaved(output: ImageCapture.OutputFileResults) {
+                        val msg = "knips: ${output.savedUri}"
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                        Log.d(TAG, msg)
+                    }
+                }
+            )
+        }
+
+        private fun captureVideo() {
+            var videoCapture = this.videoCapture ?: return
+
+            binding.videoCaptureButton.isEnabled = false
+
+            val curRecording = recording
+            if (curRecording != null) {
+                curRecording.stop()
+                recording = null
+                return
+            }
+
+            val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+                .format(System.currentTimeMillis())
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/CameraX-Video")
+                }
+            }
+
+            val mediaStoreOutputOptions = MediaStoreOutputOptions
+                .Builder(contentResolver, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+                .setContentValues(contentValues)
+                .build()
+            recording = videoCapture.output
+                .prepareRecording(requireContext(), mediaStoreOutputOptions)
+                .apply {
+                    if (PermissionChecker.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.RECORD_AUDIO
+                        ) == PermissionChecker.PERMISSION_GRANTED
+                    ) {
+                        withAudioEnabled()
+                    }
+                }
+                .start(ContextCompat.getMainExecutor(requireContext())) { recordEvent ->
+                    when (recordEvent) {
+                        is VideoRecordEvent.Start -> {
+                            binding.videoCaptureButton.apply {
+                                text = getString(R.string.stop_capture)
+                                isEnabled = true
+                            }
+                        }
+
+                        is VideoRecordEvent.Finalize -> {
+                            if (!recordEvent.hasError()) {
+                                val msg = "Video wurde aufgenommen: " +
+                                        "${recordEvent.outputResults.outputUri}"
+                                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT)
+                                    .show()
+                                Log.d(TAG, msg)
+                            } else {
+                                recording?.close()
+                                recording = null
+                                Log.e(
+                                    TAG, "Video Aufnahme fehlgeschlagen " +
+                                            "${recordEvent.error}"
+                                )
+                            }
+                            binding.videoCaptureButton.apply {
+                                text = getString(R.string.start_capture)
+                                isEnabled = true
+                            }
+                        }
+                    }
+                }
+        }
+
+        private fun startCamera() {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+            cameraProviderFuture.addListener({
+                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+                val preview = Preview.Builder()
+                    .build()
+                    .also {
+                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    }
+
+                imageCapture = ImageCapture.Builder().build()
+
+                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                try {
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(
+                        this, cameraSelector, preview, imageCapture
+                    )
+                } catch (exc: Exception) {
+                    Log.e(TAG, "Use case binding failed", exc)
+                }
+            }, ContextCompat.getMainExecutor(requireContext()))
+        }
+
+        override fun onDestroyView() {
+            super.onDestroyView()
+            _binding = null
+        }
+
+        companion object {
+            private const val TAG = "openXcam"
+            private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+            private val REQUIRED_PERMISSIONS =
+                mutableListOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO
+                ).apply {
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                        add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    }
+                }.toTypedArray()
+        }
+    }override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
