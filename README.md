@@ -16,35 +16,40 @@
 ## Funktionen
 
 ### Kamera (master branch):
-<br>
+
 **Fotos knipsen**<br>
- ![Fotoknipsen](https://github.com/F3licious/openXcam/blob/master/pictures/fotoknipsen.png)
+![Fotoknipsen](https://github.com/F3licious/openXcam/blob/master/pictures/fotoknipsen.png)
 <br>
 <br>
-**Video starten**<br>
+**Video starten/stoppen**<br>
+![Videostart/stop](https://github.com/F3licious/openXcam/blob/master/pictures/videostart_stop.png)
 <br>
-<br>
-**Video stoppen**<br>
-<br>
+
 
 ### Galerie (gallery branch):
 
 **Gallerie öffnen**<br>
+![gallerieöffnen](https://github.com/F3licious/openXcam/blob/master/pictures/gallerieoeffnen.jpg)
 <br>
 <br>
 **Bild auswählen**<br>
+![bildwählen](https://github.com/F3licious/openXcam/blob/master/pictures/bildauswaehlen.jpg)
 <br>
 <br>
 **Filter anwenden**<br>
+![filtern](https://github.com/F3licious/openXcam/blob/master/pictures/filter.jpg)
 <br>
 <br>
-**Bild drehen**
+**Bild drehen**<br>
+![drehen](https://github.com/F3licious/openXcam/blob/master/pictures/drehen.jpg)
 <br>
 <br>
 **Metadaten anzeigen**<br>
+![metadaten](https://github.com/F3licious/openXcam/blob/master/pictures/meta.jpg)
 <br>
 <br>
 **Bild speichern**<br>
+![speichern](https://github.com/F3licious/openXcam/blob/master/pictures/speichern.jpg)
 <br>
 
 ---
