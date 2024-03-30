@@ -387,6 +387,8 @@ class MediaCaptureFragment : Fragment() {
                 }
         }
 
+        
+
         private fun startCamera() {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
             cameraProviderFuture.addListener({
