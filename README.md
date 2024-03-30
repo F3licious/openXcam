@@ -18,6 +18,7 @@
 ### Kamera (master branch):
 <br>
 **Fotos knipsen**
+![Fotoknipsen](../pictures/fotoknipsen.png)
 <br>
 <br>
 **Video starten**
