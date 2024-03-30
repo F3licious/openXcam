@@ -1,10 +1,10 @@
 # openXcam
 + simple Android Foto App mit verschiedenen Filter Funktionen
-+ EInblick in die Metadaten des Bildes
++ Einblick in die Metadaten des Bildes
 
 ---
 
-## WIchtige Hinweise
+## Wichtige Hinweise
 + bisher funktionieren die Kamara und die Gallerie Funktionen nicht in einer Version
 + bei dem Versuch die Funktionalitäten wird das Kamera Bild nicht angezeigt, es wird kein Kamera Bild angezeigt, Fehler wird auch nicht geworfen, bisher noch keine Lösung gefunden
 + deshalb: master/main: Kamera Funktionalität, gallery: Fotos anzeigen, bearbeiten, Metadaten anzeigen
@@ -15,14 +15,43 @@
 
 ## Funktionen
 
-### Kamera
-*master branch*
+### Kamera (master branch)
 <br>
-*Fotos knipsen*
+**Fotos knipsen**
 
 <br>
-*Video starten*
+**Video starten**
 <br>
-*Video stoppen*
+**Video stoppen**
+
+
+### Galerie (gallery branch)
+
+**Gallerie öffnen**
+<br>
+
+**Bild auswählen**
+<br>
+
+**Filter anwenden**
+<br>
+
+**Bild drehen**
+<br>
+
+**Metadaten anzeigen**
+<br>
+
+**Bild speichern**
+<br>
+
+---
+
+**Autor:** Felix Polte
+**e-mail:** felix.polte@fh-erfurt.de
+
+
+
+
 
   
