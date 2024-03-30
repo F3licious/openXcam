@@ -15,39 +15,52 @@
 
 ## Funktionen
 
-### Kamera (master branch)
+### Kamera (master branch):
 <br>
 **Fotos knipsen**
-
+<br>
 <br>
 **Video starten**
 <br>
+<br>
 **Video stoppen**
+<br>
 
-
-### Galerie (gallery branch)
+### Galerie (gallery branch):
 
 **Gallerie öffnen**
 <br>
-
+<br>
 **Bild auswählen**
 <br>
-
+<br>
 **Filter anwenden**
 <br>
-
+<br>
 **Bild drehen**
 <br>
-
+<br>
 **Metadaten anzeigen**
 <br>
-
+<br>
 **Bild speichern**
 <br>
 
 ---
 
+## Test
+
+**App wurde getestet auf folgenden Geräten:**
+<br><br>
++ Google Pixel 6(nativ, Android 14 Stand: 29.03.2024)
++ Google Pixel 7(Emulator, Android 14)
+
+
+
+---
+
 **Autor:** Felix Polte
+<br>
 **e-mail:** felix.polte@fh-erfurt.de
 
 
