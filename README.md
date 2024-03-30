@@ -18,7 +18,7 @@
 ### Kamera (master branch):
 <br>
 **Fotos knipsen**
-![Fotoknipsen](/pictures/fotoknipsen.png)
+![Fotoknipsen](https://github.com/F3licious/openXcam/blob/master/pictures/fotoknipsen.png)
 <br>
 <br>
 **Video starten**
