@@ -1,12 +1,13 @@
 # openXcam
-+ simple Android Foto App mit verschiedenen Filter Funktionen
++ simple Android Foto App mit Kamera Funktionalität und verschiedenen Filter Funktionen
 + Einblick in die Metadaten des Bildes
++ made with CameraX
 
 ---
 
 ## Wichtige Hinweise
 + bisher funktionieren die Kamara und die Gallerie Funktionen nicht in einer Version
-+ bei dem Versuch die Funktionalitäten wird das Kamera Bild nicht angezeigt, es wird kein Kamera Bild angezeigt, Fehler wird auch nicht geworfen, bisher noch keine Lösung gefunden
++ bei dem Versuch die Funktionalitäten zu trennen wurde das Kamera Bild nicht mehr angezeigt, Fehler wird auch nicht geworfen, bisher noch keine Lösung gefunden
 + deshalb: master/main: Kamera Funktionalität, gallery: Fotos anzeigen, bearbeiten, Metadaten anzeigen
 
 + im darkmode sieht die app aufgrund der Farben etwas besser aus
